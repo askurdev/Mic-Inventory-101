@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  postgres:
+    container_name: postgres
+    image: "postgres:13"
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgress
+      POSTGRES_PASSWORD: postgress
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - "-u"
+        - auth
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  pgadmin:
+    container_name: new_pgadmin
+    image: dpage/pgadmin4
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "127.0.0.1:5050:80"
+      - "127.0.0.1:5051:443"
+
+  mailhog:
+    container_name: mailhog2
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    volumes:
+      - mailhog:/var/lib/mailhog
+
+  redis:
+    container_name: redis_container
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel warning
+    volumes:
+      - "./docker-volumes/cache:/data"
+
+  rabbitmq:
+    container_name: rabbitmq_container
+    image: "rabbitmq:3.13-management-alpine"
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  postgres:
+  mailhog:
