@@ -2,7 +2,7 @@
 
 <p>I am Askur Rahman. I have a import business.I want to Inventory software for my business world wide. Now I need to inventory software for my business.</p>
 
-# SRS Software Requirement Spacification
+# SRS Software Requirement Specification
 
 #### Project Name: Inventory Management
 
