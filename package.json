@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/morgan": "^1.9.9"
-  }
-}
