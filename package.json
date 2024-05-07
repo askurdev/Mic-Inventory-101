@@ -1,6 +1,26 @@
 {
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/morgan": "^1.9.9"
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.12.10",
+    "ts-node-dev": "^2.0.0",
+    "tsc": "^2.0.4",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
+  },
+  "name": "mic-inventory-101",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/askurdev/Mic-Inventory-101.git",
+  "author": "Askur Rahman <imaskurrahman@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "zod": "^3.23.6"
   }
 }
