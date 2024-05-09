@@ -16,17 +16,17 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: "UP" });
 });
 
-app.use((req, res,next) => {
-    const allowedOrigins = ['http://localhost:8081', 'http://127.0.0.1:8081'];
-    const origin = req.headers.origin || '';
+// app.use((req, res,next) => {
+//     const allowedOrigins = ['http://localhost:8081', 'http://127.0.0.1:8081'];
+//     const origin = req.headers.origin || '';
 
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin',origin);
-        next();
-    } else {
-        res.status(403).json({message: 'Forbidden'})
-    }
-})
+//     if (allowedOrigins.includes(origin)) {
+//         res.setHeader('Access-Control-Allow-Origin',origin);
+//         next();
+//     } else {
+//         res.status(403).json({message: 'Forbidden'})
+//     }
+// })
 
 // routes
 app.get('/inventories/:id/details', getInventoryDetails);
@@ -45,7 +45,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ message: "Internal server error" });
 });
 
-const port = process.env.PORT || 4005;
+const port = process.env.PORT || 3005;
 const serviceName = process.env.SERVICE_NAME || 'Inventory-Service';
 
 app.listen(port, () => {
