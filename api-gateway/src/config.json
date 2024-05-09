@@ -1,7 +1,7 @@
 {
   "services": {
     "product": {
-      "url": "http://localhost:4006",
+      "url": "http://localhost:3006",
       "routes": [
         {
           "path": "/products",
@@ -15,7 +15,7 @@
     },
 
     "inventory": {
-      "url": "http://localhost:4005",
+      "url": "http://localhost:3005",
       "routes": [
         {
           "path": "/inventories/:id",
