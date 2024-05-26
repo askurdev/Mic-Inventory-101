@@ -6,7 +6,7 @@ describe("GET /", function () {
     const chai = await import("chai");
     const expect = chai.expect;
 
-    await request(app)
+    await request(index.ts)
       .get("/")
       .expect(200)
       .then((res) => {
