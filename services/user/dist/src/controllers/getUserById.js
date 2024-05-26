@@ -14,7 +14,7 @@ const getUserById = async (req, res, next) => {
             user = await prisma_1.default.user.findUnique({ where: { authUserId: id } });
         }
         else {
-            await prisma_1.default.user.findUnique({ where: { id } });
+            user = await prisma_1.default.user.findUnique({ where: { id } });
         }
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

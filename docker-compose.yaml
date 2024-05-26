@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 
 services:
   postgres:
@@ -24,21 +24,22 @@ services:
       retries: 3
 
   pgadmin:
-    container_name: new_pgadmin
+    container_name: pgadmin
     image: dpage/pgadmin4
-    restart: on-failure
+
+    restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: admin@inventory.com
+      PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "127.0.0.1:5050:80"
       - "127.0.0.1:5051:443"
 
   mailhog:
-    container_name: mailhog2
+    container_name: mailhog
     image: mailhog/mailhog
     ports:
-      - "1025:1025"
+      - "9025:9025"
       - "8025:8025"
     volumes:
       - mailhog:/var/lib/mailhog
@@ -64,3 +65,5 @@ services:
 volumes:
   postgres:
   mailhog:
+  redis:
+  rabbitmq:

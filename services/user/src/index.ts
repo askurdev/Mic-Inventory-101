@@ -18,7 +18,7 @@ app.get('/health', (req, res) => {
 });
 
 // app.use((req, res,next) => {
-//     const allowedOrigins = ['http://localhost:8081', 'http://127.0.0.1:8081'];
+//     const allowedOrigins = ['http://localhost:8082', 'http://127.0.0.1:8082'];
 //     const origin = req.headers.origin || '';
 
 //     if (allowedOrigins.includes(origin)) {
@@ -45,7 +45,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ message: "Internal server error" });
 });
 
-const port = process.env.PORT || 4004;
+const port = process.env.PORT || 3004;
 const serviceName = process.env.SERVICE_NAME || 'User-Service';
 
 app.listen(port, () => {

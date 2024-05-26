@@ -14,7 +14,7 @@ const sendEmail = async (req: Request, res: Response, next: NextFunction) => {
         }
 
         // create mail option
-        const {sender, recipient, subject, body, source} = parsedBody.data
+        const {sender, recipient, subject, body, source} = parsedBody.data;
         const from = sender || defaultSender
         const emailOption = {
             from,
@@ -37,10 +37,10 @@ const sendEmail = async (req: Request, res: Response, next: NextFunction) => {
                 subject,
                 body,
                 source,
-            }
-        })
+            },
+        });
 
-        return res.status(200).json({ message: 'Email sent'})
+        return res.status(200).json({ message: 'Email send'})
     } catch (error) {
         next(error)
 

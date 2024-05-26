@@ -1,48 +1,86 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { AccessTokenSchema } from "@/schemas";
-import prisma from "@/prisma";
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import prisma from '@/prisma';
+import { AccessTokenSchema } from '@/schemas';
 
+const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		// Validate the request body
+		const parsedBody = AccessTokenSchema.safeParse(req.body);
+		if (!parsedBody.success) {
+			return res.status(400).json({ errors: parsedBody.error.errors });
+		}
 
-const verifyToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+		
+		console.log("JWT_SECRET", process.env.JWT_SECRET)
 
-    //validate the request body
+		const { accessToken } = parsedBody.data;
+		const decoded = jwt.verify(accessToken, process.env.JWT_SECRET as string);
 
-    const parsedBody = AccessTokenSchema.safeParse(req.body);
-  if (!parsedBody.success) {
-    return res.status(400).json({errors: parsedBody.error.errors})
-  }
+		const user = await prisma.user.findUnique({
+			where: { id: (decoded as any).userId },
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				role: true,
+			},
+		});
 
-  const {accessToken} = parsedBody.data;
+		if (!user) {
+			return res.status(401).json({ message: 'Unauthorized' });
+		}
 
-  const decoded = jwt.verify(accessToken, process.env.JWT_SECRET as string);
-  const user = await prisma.user.findUnique({
-    where: {id: (decoded as any).id},
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
-
-
-    }
-  })
-
-  if (!user) {
-    return res.status(401).json({message: 'Unauthorized'});
-
-  }
-
-  return res.status(200).json({message: 'Authorized', user})
-
-  } catch (error) {
-    next(error);
-  }
-}
+		return res.status(200).json({ message: 'Authorized', user });
+	} catch (error) {
+		next(error);
+	}
+};
 
 export default verifyToken;
+
+// import { Request, Response, NextFunction } from "express";
+// import jwt from "jsonwebtoken";
+// import { AccessTokenSchema } from "@/schemas";
+// import prisma from "@/prisma";
+
+// const verifyToken = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     // Validate the request body
+//     const parsedBody = AccessTokenSchema.safeParse(req.body);
+//     if (!parsedBody.success) {
+//       return res.status(400).json({ errors: parsedBody.error.errors });
+//     }
+
+//     // Extract the access token from the request
+//     const { accessToken } = parsedBody.data;
+
+//     try {
+//       // Verify the access token
+//       const decoded = jwt.verify(accessToken, process.env.JWT_SECRET as string);
+
+//       // Retrieve user information based on the decoded token's ID
+//       const user = await prisma.user.findUnique({
+//         where: { id: (decoded as any).userId },
+//         select: { id: true, email: true, name: true, role: true }
+//       });
+
+//       if (!user) {
+//         return res.status(401).json({ message: 'Unauthorized' });
+//       }
+
+//       return res.status(200).json({ message: 'Authorized', user });
+//     } catch (error) {
+//       return res.status(401).json({ message: 'Unauthorized' });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// export default verifyToken;
+

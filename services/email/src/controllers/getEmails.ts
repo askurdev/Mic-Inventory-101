@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction} from 'express';
 import prisma from '@/prisma';
 
-const getEmail = async (_req: Request, res: Response, next: NextFunction) => {
+const getEmails = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const emails = await prisma.email.findMany();
         res.json(emails);
@@ -10,4 +10,4 @@ const getEmail = async (_req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export default getEmail;
+export default getEmails;

@@ -2,7 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
-import { getEmail, sendEmail } from './controllers';
+import { getEmails, sendEmail } from './controllers'
+import './receiver'
 
 
 
@@ -22,7 +23,7 @@ app.get('/health', (req, res) => {
 // Route
 
 app.post('/emails/send', sendEmail);
-app.get('/emails', getEmail);
+app.get('/emails', getEmails);
 
 
 
@@ -38,7 +39,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ message: "Internal server error" });
 });
 
-const port = process.env.PORT || 4002;
+const port = process.env.PORT || 3002;
 const serviceName = process.env.SERVICE_NAME || 'Email-Service';
 
 app.listen(port, () => {

@@ -1,10 +1,24 @@
 import nodemailer from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.mailtrap.io',
-    port: parseInt(process.env.SMTP_PORT || '2525')
+    host: process.env.SMTP_HOST || 'host.docker.internal',
+    port: parseInt(process.env.SMTP_PORT || '9025')
 })
 
 export const defaultSender = 
-    process.env.DEFAULT_SENDER_EMAIL || 'admin@example.com'
+       process.env.DEFAULT_SENDER_EMAIL || 'admin@inventory.com'
 
+
+
+
+//     import nodemailer from 'nodemailer';
+
+//     export const transporter = nodemailer.createTransport({
+//         host: process.env.SMTP_HOST || 'smtp.mailtrap.io',
+//         port: parseInt(process.env.SMTP_PORT || '2525')
+//     })
+    
+//     export const defaultSender = 
+//         process.env.DEFAULT_SENDER_EMAIL || 'admin@example.com'
+    
+    

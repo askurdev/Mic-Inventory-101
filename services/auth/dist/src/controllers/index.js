@@ -12,4 +12,8 @@ var userLogin_1 = require("./userLogin");
 Object.defineProperty(exports, "userLogin", { enumerable: true, get: function () { return __importDefault(userLogin_1).default; } });
 var verifyEmail_1 = require("./verifyEmail");
 Object.defineProperty(exports, "verifyEmail", { enumerable: true, get: function () { return __importDefault(verifyEmail_1).default; } });
+// export { default as verifyToken} from './verifyToken';
+// export { default as userRegistration} from './userRegistration';
+// export { default as userLogin} from './userLogin';
+// export { default as verifyEmail } from './verifyEmail';
 //# sourceMappingURL=index.js.map
