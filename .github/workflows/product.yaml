@@ -1,0 +1,37 @@
+name: Product Service CI
+
+on:
+  push:
+    paths:
+      - 'product/**'
+  pull_request:
+    paths:
+      - 'product/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: |
+        cd product
+        npm install
+
+    - name: Run tests
+      run: |
+        cd product
+        npm test
+
+    - name: Build
+      run: |
+        cd product
+        npm run build
