@@ -23,7 +23,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: askurr/email
+          images: askurr/inventory
           
       - name: Build and push
         uses: docker/build-push-action@v3
