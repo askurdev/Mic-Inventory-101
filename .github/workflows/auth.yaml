@@ -1,71 +1,29 @@
-name: Auth Service Tests
+name: Auth Service CI
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+
 
 jobs:
-  test:
+  inventory-auth:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Action Started
-        run: echo "Action Started"
-
-      - name: Checkout repository
+      - run: echo "Action Started"
+      - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: |
-          cd auth
-          yarn install --frozen-lockfile
-        
-      - name: Run tests
-        run: |
-          cd auth
-          yarn test
-        
+      - name: Run a one-line script
+        run : echo "Hello,auth!"
+      - name: Run a multi-line script
+        run:  |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+      - name: List files
+        run: ls ${{ github.workspace }}
+      - name: Print GitHub context
+        env:
+          GITHUB_CONTEXT: ${{toJson(github)}}
+        run: echo "$GITHUB_CONTEXT"
       - name: Action completed
-        run: echo "Action completed"
-
-
-
-
-# name: Auth Service CI
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-
-# jobs:
-#   inventory-auth:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - run: echo "Action Started"
-#       - name: Checkout
-#         uses: actions/checkout@v4
-#       - name: Run a one-line script
-#         run : echo "Hello,auth!"
-#       - name: Run a multi-line script
-#         run:  |
-#           echo Add other actions to build,
-#           echo test, and deploy your project.
-#       - name: List files
-#         run: ls ${{ github.workspace }}
-#       - name: Print GitHub context
-#         env:
-#           GITHUB_CONTEXT: ${{toJson(github)}}
-#         run: echo "$GITHUB_CONTEXT"
-#       - name: Action completed
-#         run:  echo "Action completed"
+        run:  echo "Action completed"
