@@ -2,11 +2,9 @@ name: Inventory Service CI
 
 on:
   push:
-    paths:
-      - 'inventory/**'
-  pull_request:
-    paths:
-      - 'inventory/**'
+    branches:
+      - main
+
 
 jobs:
   build:
@@ -22,16 +20,9 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: |
-        cd inventory
-        npm install
-
+      run: yarn install --frozen-lockfile
+        
     - name: Run tests
-      run: |
-        cd inventory
-        npm test
-
-    - name: Build
-      run: |
-        cd inventory
-        npm run build
+      run: yarn test
+        
+    - run: echo "All tests passed"

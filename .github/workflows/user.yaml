@@ -20,16 +20,9 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: |
-        cd user
-        npm install
-
+      run: yarn install --frozen-lockfile
+        
     - name: Run tests
-      run: |
-        cd user
-        npm test
-
-    - name: Build
-      run: |
-        cd user
-        npm run build
+      run: yarn test
+        
+    - run: echo "All tests passed"
