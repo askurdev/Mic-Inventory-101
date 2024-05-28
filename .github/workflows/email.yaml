@@ -7,22 +7,23 @@ on:
 
 
 jobs:
-  build:
+  demo-job:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'
-
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile
-        
-    - name: Run tests
-      run: yarn test
-        
-    - run: echo "All tests passed"
+      - run: echo "Action Started"
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run a one-line script
+        run : echo "Hello,email!"
+      - name: Run a multi-line script
+        run:  |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+      - name: List files
+        run: ls ${{ github.workspace }}
+      - name: Print GitHub context
+        env:
+          GITHUB_CONTEXT: ${{toJson(github)}}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Action completed
+        run:  echo "Action completed"
