@@ -2,27 +2,36 @@ name: Product Service CI
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'product/**'
+  pull_request:
+    paths:
+      - 'product/**'
 
 jobs:
-  demo-job:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "Action Started"
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Run a one-line script
-        run : echo "Hello,World!"
-      - name: Run a multi-line script
-        run:  |
-          echo Add other actions to build,
-          echo test, and deploy your project.
-      - name: List files
-        run: ls ${{ github.workspace }}
-      - name: Print GitHub context
-        env:
-          GITHUB_CONTEXT: ${{toJson(github)}}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Action completed
-        run:  echo "Action completed"
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: |
+        cd product
+        npm install
+
+    - name: Run tests
+      run: |
+        cd product
+        npm test
+
+    - name: Build
+      run: |
+        cd product
+        npm run build
