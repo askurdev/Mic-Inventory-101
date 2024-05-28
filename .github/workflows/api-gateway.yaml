@@ -1,4 +1,4 @@
-name: API Service CI
+name: API Gateway Service CI
 
 on:
   push:
