@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -23,15 +23,15 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd mic-inventory/api
+        cd mic-inventory-101/api-gateway
         yarn install
 
     - name: Run tests
       run: |
-        cd mic-inventory/api
+        cd mic-inventory-101/api-gateway
         yarn test
 
     - name: Build
       run: |
-        cd mic-inventory/api
+        cd mic-inventory-101/api-gateway
         yarn run build
