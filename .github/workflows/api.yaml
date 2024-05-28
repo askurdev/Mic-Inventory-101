@@ -28,3 +28,18 @@ jobs:
       - name: Action completed
         run:  echo "Action completed"
 
+      - name: Install dependencies
+        run: |
+          cd api
+          yarn install --frozen-lockfile
+
+      - name: Run tests
+        run: |
+          cd api
+          yarn test
+
+      - name: Build
+        run: |
+          cd api
+          yarn run build
+
