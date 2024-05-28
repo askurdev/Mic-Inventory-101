@@ -2,44 +2,36 @@ name: API Service CI
 
 on:
   push:
-    branches:
-      - main
-
+    paths:
+      - 'api/**'
+  pull_request:
+    paths:
+      - 'api/**'
 
 jobs:
-  inventory-api:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "Action Started"
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Run a one-line script
-        run : echo "Hello,Api!"
-      - name: Run a multi-line script
-        run:  |
-          echo Add other actions to build,
-          echo test, and deploy your project.
-      - name: List files
-        run: ls ${{ github.workspace }}
-      - name: Print GitHub context
-        env:
-          GITHUB_CONTEXT: ${{toJson(github)}}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Action completed
-        run:  echo "Action completed"
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: |
-          cd api
-          yarn install --frozen-lockfile
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
 
-      - name: Run tests
-        run: |
-          cd api
-          yarn test
+    - name: Install dependencies
+      run: |
+        cd mic-inventory/api
+        yarn install
 
-      - name: Build
-        run: |
-          cd api
-          yarn run build
+    - name: Run tests
+      run: |
+        cd mic-inventory/api
+        yarn test
 
+    - name: Build
+      run: |
+        cd mic-inventory/api
+        yarn run build
