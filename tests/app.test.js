@@ -1,8 +1,8 @@
 const request = require("supertest");
-const app = require("..//app");
+const api = require("..//api-gateway/src/index");
 
 describe("GET /", function () {
-  it('response with text "Hello Inventory!"', async function () {
+  it('response with text "API Gateway is running"', async function () {
     const chai = await import("chai");
     const expect = chai.expect;
 
@@ -10,7 +10,7 @@ describe("GET /", function () {
       .get("/")
       .expect(200)
       .then((res) => {
-        expect(res.text).to.equal("Hello Inventory!");
+        expect(res.text).to.equal("API Gateway is running");
       });
   });
 });
