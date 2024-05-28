@@ -2,11 +2,8 @@ name: API Service CI
 
 on:
   push:
-    paths:
-      - 'api/**'
-  pull_request:
-    paths:
-      - 'api/**'
+    branches:
+      - main
 
 jobs:
   build:
