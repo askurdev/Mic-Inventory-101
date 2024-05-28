@@ -7,7 +7,7 @@ on:
 
 
 jobs:
-  demo-job:
+  inventory-product:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Action Started"
