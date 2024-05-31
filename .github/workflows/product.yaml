@@ -23,17 +23,17 @@ jobs:
 
     - name: Install Node.js dependencies
       run: |
-        cd user
+        cd Product
         yarn install --frozen-lockfile # Perform a clean install of Node.js dependencies.
 
     - name: Run tests
       run: |
-        cd user
+        cd Product
         yarn test # Run tests using the specified Node.js version.
 
     - name: List files in user directory for debugging
       run: |
-        cd user
+        cd Product
         ls -la # List files in the user directory to ensure correct path and files.
 
 
