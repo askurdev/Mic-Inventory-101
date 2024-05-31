@@ -1,36 +1,73 @@
-name: API Gateway Service Tests
+name:  API Gateway Service Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ] # Trigger the workflow on every commit to the main branch.
   pull_request:
-    branches:
-      - main
+    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch.
 
 jobs:
-  test:
+  build:
+
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x,20.x] # Define a matrix of Node.js versions to test.There would be 3 jobs for 12.x, 14.x, 16.x
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4  # Updated to the latest version
+    - name: Checkout code
+      uses: actions/checkout@v4 # Step 1: Check out the source code from the repository.
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'  # Updated to Node.js version 20
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn' # Step 2: Use npm caching for faster dependency installs.
 
-      - name: Install dependencies
-        run: |
-          cd api-gateway
-          yarn install --frozen-lockfile
+    - name: Install Node.js dependencies
+      run: yarn ci # Step 3: Perform a clean install of Node.js dependencies.
 
-      - name: Run tests
-        run: |
-          cd api-gateway
-          yarn test
+    - name: Run tests
+      run: yarn test # Step 4: Run tests using the specified Node.js version.
 
+
+
+# name: API Gateway Service Tests
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '20'
+
+#       - name: List files in repository
+#         run: ls -R
+
+#       - name: Install dependencies
+#         run: |
+#           cd mic-inventory-101/api-gateway
+#           yarn install --frozen-lockfile
+
+#       - name: Run tests
+#         run: |
+#           cd mic-inventory-101/api-gateway
+#           yarn test
 
 
 # name: API Gateway Service Tests
