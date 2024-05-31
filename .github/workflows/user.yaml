@@ -8,32 +8,37 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['20.x'] # Specify Node.js 20.x version
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4 # Check out the source code from the repository.
+      uses: actions/checkout@v4 # Checkout the source code from the repository.
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3 # Use setup-node action version 3
       with:
-        node-version: '20' # Use Node.js 20
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn' # Use yarn caching for faster dependency installs.
 
     - name: Install Node.js dependencies
       run: |
-        cd User
+        cd user
         yarn install --frozen-lockfile # Perform a clean install of Node.js dependencies.
 
     - name: Run tests
       run: |
-        cd User
+        cd user
         yarn test # Run tests using the specified Node.js version.
 
     - name: List files in user directory for debugging
       run: |
-        cd User
+        cd user
         ls -la # List files in the user directory to ensure correct path and files.
+
 
 
 
