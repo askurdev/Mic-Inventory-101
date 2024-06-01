@@ -1,38 +1,37 @@
-name: Build and Push Docker Images
+name: publish Docker Image
 
 on:
   push:
-    paths:
-      - 'services/auth/**'
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  push-to-registry:
+    name: Push to Docker Hub
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Get commit hash
-        id: commit_hash
-        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
-      
+        
       - name: Login to Docker Hub
-        run: echo "${Askk232141}" | docker login -u "${askurr}" --password-stdin
-
-      - name: Build and push Auth service Docker image
-        run: |
-          cd services/auth
-          docker build \
-            --build-arg DATABASE_URL="${{ secrets.AUTH_DATABASE_URL }}" \
-            --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-            --build-arg EMAIL_SERVICE_URL="${{ secrets.EMAIL_SERVICE_URL }}" \
-            --build-arg USER_SERVICE_URL="${{ secrets.USER_SERVICE_URL }}" \
-            -t $DOCKER_USERNAME/auth:${{ steps.commit_hash.outputs.hash }} \
-            .
-          docker push $DOCKER_USERNAME/auth:${{ steps.commit_hash.outputs.hash }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Extra meta information
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: askurr/mic-inventory-101
+          
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
 
 
