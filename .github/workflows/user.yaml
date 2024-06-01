@@ -1,43 +1,35 @@
-name: User Service CI
+name: Build and Push Docker Images
 
 on:
   push:
-    branches: [ main ] # Trigger the workflow on every commit to the main branch.
-  pull_request:
-    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch.
+    paths:
+      - 'services/user/**'
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: ['20.x'] # Specify Node.js 20.x version
-
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4 # Checkout the source code from the repository.
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get commit hash
+        id: commit_hash
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+      
+      - name: Login to Docker Hub
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3 # Use setup-node action version 3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn' # Use yarn caching for faster dependency installs.
-
-    - name: Install Node.js dependencies
-      run: |
-        cd user
-        yarn install --frozen-lockfile # Perform a clean install of Node.js dependencies.
-
-    - name: Run tests
-      run: |
-        cd user
-        yarn test # Run tests using the specified Node.js version.
-
-    - name: List files in user directory for debugging
-      run: |
-        cd user
-        ls -la # List files in the user directory to ensure correct path and files.
+      - name: Build and push User service Docker image
+        run: |
+          cd services/user
+          docker build \
+            --build-arg DATABASE_URL="${{ secrets.USER_DATABASE_URL }}" \
+            -t $DOCKER_USERNAME/user:${{ steps.commit_hash.outputs.hash }} \
+            .
+          docker push $DOCKER_USERNAME/user:${{ steps.commit_hash.outputs.hash }}
 
 
 

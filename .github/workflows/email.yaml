@@ -1,39 +1,41 @@
-name: Email Service CI
-
+name: Build and Push Docker Image - Email Service
 on:
   push:
-    branches: [ main ] # Trigger the workflow on every commit to the main branch.
-  pull_request:
-    branches: [ main ] # Trigger the workflow on pull requests targeting the main branch.
-
+    paths:
+      - 'services/email/**'
 jobs:
-  build:
-
+  build-and-push:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4 # Check out the source code from the repository.
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get commit hash
+        id: commit_hash
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+      
+      - name: Login to Docker Hub
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20' # Use Node.js 20
-
-    - name: Install Node.js dependencies
-      run: |
-        cd email
-        yarn install --frozen-lockfile # Perform a clean install of Node.js dependencies.
-
-    - name: Run tests
-      run: |
-        cd email
-        yarn test # Run tests using the specified Node.js version.
-
-    - name: List files in user directory for debugging
-      run: |
-        cd email
-        ls -la # List files in the user directory to ensure correct path and files.
+      - name: Build and push Email service Docker image
+        run: |
+          cd services/email
+          docker build \
+            --build-arg MAIL_DATABASE_URL=$MAIL_DATABASE_URL \
+            --build-arg SMTP_HOST=$SMTP_HOST \
+            --build-arg SMTP_PORT=$SMTP_PORT \
+            --build-arg GOOGLE_SMTP_USER=$GOOGLE_SMTP_USER \
+            --build-arg GOOGLE_SMTP_PASSWORD=$GOOGLE_SMTP_PASSWORD \
+            --build-arg DEFAULT_SENDER_EMAIL=$DEFAULT_SENDER_EMAIL \
+            --build-arg RABBITMQ_URL=$RABBITMQ_URL \
+            -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} \
+            .
+          docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
 
 
 # on:
