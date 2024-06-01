@@ -1,39 +1,38 @@
-name: Build and Push Docker Images
+name: publish Docker Image
 
 on:
   push:
-    paths:
-      - 'services/product/**'
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  push-to-registry:
+    name: Push to Docker Hub
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Get commit hash
-        id: commit_hash
-        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
-      
+        
       - name: Login to Docker Hub
-        run: echo "${Askk232141}" | docker login -u "${askurr}" --password-stdin
-
-      - name: Build and push Product service Docker image
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Extra meta information
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: askurr/mic-inventory-101
+          
+      - name: Build and push Inventory service Docker image
         run: |
-          cd services/product
+          cd services/inventory
           docker build \
-            --build-arg PRODUCT_DATABASE_URL="${{ secrets.PRODUCT_DATABASE_URL }}" \
-            --build-arg INVENTORY_SERVICE_URL="${{ secrets.INVENTORY_SERVICE_URL }}" \
-            -t $DOCKER_USERNAME/product:${{ steps.commit_hash.outputs.hash }} \
+            --build-arg INVENTORY_DATABASE_URL="${{ secrets.INVENTORY_DATABASE_URL }}" \
+            -t $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }} \
             .
-          docker push $DOCKER_USERNAME/product:${{ steps.commit_hash.outputs.hash }}
-
-
-
+          docker push $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }}
 # on:
 #   push:
 #     branches:
@@ -61,7 +60,6 @@ jobs:
 #         run: yarn test
 
 
-
 # on:
 #   push:
 #     branches:
@@ -69,14 +67,14 @@ jobs:
 
 
 # jobs:
-#   inventory-product:
+#   inventory-main:
 #     runs-on: ubuntu-latest
 #     steps:
 #       - run: echo "Action Started"
 #       - name: Checkout
 #         uses: actions/checkout@v4
 #       - name: Run a one-line script
-#         run : echo "Hello,Product!"
+#         run : echo "Hello,Inventory!"
 #       - name: Run a multi-line script
 #         run:  |
 #           echo Add other actions to build,

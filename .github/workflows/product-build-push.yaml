@@ -25,16 +25,15 @@ jobs:
         with:
           images: askurr/mic-inventory-101
           
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-
-
-
+      - name: Build and push Product service Docker image
+        run: |
+          cd services/product
+          docker build \
+            --build-arg PRODUCT_DATABASE_URL="${{ secrets.PRODUCT_DATABASE_URL }}" \
+            --build-arg INVENTORY_SERVICE_URL="${{ secrets.INVENTORY_SERVICE_URL }}" \
+            -t $DOCKER_USERNAME/product:${{ steps.commit_hash.outputs.hash }} \
+            .
+          docker push $DOCKER_USERNAME/product:${{ steps.commit_hash.outputs.hash }}
 
 
 # on:
@@ -64,6 +63,7 @@ jobs:
 #         run: yarn test
 
 
+
 # on:
 #   push:
 #     branches:
@@ -71,14 +71,14 @@ jobs:
 
 
 # jobs:
-#   inventory-user:
+#   inventory-product:
 #     runs-on: ubuntu-latest
 #     steps:
 #       - run: echo "Action Started"
 #       - name: Checkout
 #         uses: actions/checkout@v4
 #       - name: Run a one-line script
-#         run : echo "Hello,User!"
+#         run : echo "Hello,Product!"
 #       - name: Run a multi-line script
 #         run:  |
 #           echo Add other actions to build,

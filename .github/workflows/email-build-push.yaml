@@ -25,13 +25,20 @@ jobs:
         with:
           images: askurr/mic-inventory-101
           
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+      - name: Build and push Email service Docker image
+        run: |
+          cd services/email
+          docker build \
+            --build-arg MAIL_DATABASE_URL=$MAIL_DATABASE_URL \
+            --build-arg SMTP_HOST=$SMTP_HOST \
+            --build-arg SMTP_PORT=$SMTP_PORT \
+            --build-arg GOOGLE_SMTP_USER=$GOOGLE_SMTP_USER \
+            --build-arg GOOGLE_SMTP_PASSWORD=$GOOGLE_SMTP_PASSWORD \
+            --build-arg DEFAULT_SENDER_EMAIL=$DEFAULT_SENDER_EMAIL \
+            --build-arg RABBITMQ_URL=$RABBITMQ_URL \
+            -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} \
+            .
+          docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
 
 
 # on:

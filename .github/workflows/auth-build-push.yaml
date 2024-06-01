@@ -25,13 +25,17 @@ jobs:
         with:
           images: askurr/mic-inventory-101
           
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+      - name: Build and push Auth service Docker image
+        run: |
+          cd services/auth
+          docker build \
+            --build-arg DATABASE_URL="${{ secrets.AUTH_DATABASE_URL }}" \
+            --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            --build-arg EMAIL_SERVICE_URL="${{ secrets.EMAIL_SERVICE_URL }}" \
+            --build-arg USER_SERVICE_URL="${{ secrets.USER_SERVICE_URL }}" \
+            -t $DOCKER_USERNAME/auth:${{ steps.commit_hash.outputs.hash }} \
+            .
+          docker push $DOCKER_USERNAME/auth:${{ steps.commit_hash.outputs.hash }}
 
 
 
