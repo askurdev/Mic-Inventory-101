@@ -5,34 +5,32 @@ on:
     paths:
       -  'services/auth/**'
 
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Get commit hash
-        id: commit_hash
-        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
-      
-      - name: Login to Docker Hub
-        run: echo "${DOCKER_PASSWORD}" | docker login -askurr "${DOCKER_USERNAME}" --password-Askk232141
 
-      - name: Build and push Auth service Docker image
+      - name: Get commit hash
+        run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+
+      - name: Build and push User service Docker image
+        env:
+          DATABASE_URL: ${{ secrets.AUTH_DATABASE_URL }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           cd 'services/auth/**'
-          docker build \
-            --build-arg DATABASE_URL="${{ secrets.AUTH_DATABASE_URL }}" \
-            --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-            --build-arg EMAIL_SERVICE_URL="${{ secrets.EMAIL_SERVICE_URL }}" \
-            --build-arg USER_SERVICE_URL="${{ secrets.USER_SERVICE_URL }}" \
-            -t $DOCKER_USERNAME/auth:${{ steps.commit_hash.outputs.hash }} \
-            .
-          docker push $DOCKER_USERNAME/auth:${{ steps.commit_hash.outputs.hash }}
+          docker build --build-arg DATABASE_URL="${DATABASE_URL}" -t $DOCKER_USERNAME/user:${{ env.hash }} .
+          docker push $DOCKER_USERNAME/user:${{ env.hash }}
+
 
 
 
