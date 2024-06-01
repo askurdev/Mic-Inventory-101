@@ -3,7 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     paths:
-      - 'services/inventory/**'
+      - 'api-gateway/**'
 
 jobs:
   build-and-push:
@@ -22,14 +22,20 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-      - name: Build and push Inventory service Docker image
+      - name: Build and push User service Docker image
         run: |
-          cd services/inventory
+          cd api-gateway
           docker build \
-            --build-arg INVENTORY_DATABASE_URL="${{ secrets.INVENTORY_DATABASE_URL }}" \
-            -t $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }} \
+            --build-arg DATABASE_URL="${{ secrets.API-GATEWAY_DATABASE_URL }}" \
+            -t $DOCKER_USERNAME/user:${{ steps.commit_hash.outputs.hash }} \
             .
-          docker push $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }}
+          docker push $DOCKER_USERNAME/user:${{ steps.commit_hash.outputs.hash }}
+
+
+
+# name: API Gateway Service Tests
+
+# on:
 #   push:
 #     branches:
 #       - main
@@ -43,17 +49,29 @@ jobs:
 
 #     steps:
 #       - name: Checkout repository
-#         uses: actions/checkout@v2
+#         uses: actions/checkout@v4
 
 #       - name: Set up Node.js
 #         uses: actions/setup-node@v3
 #         with:
 #           node-version: '20'
 
+#       - name: List files in repository
+#         run: ls -R
+
 #       - name: Install dependencies
-#         run: yarn ci
+#         run: |
+#           cd mic-inventory-101/api-gateway
+#           yarn install --frozen-lockfile
+
 #       - name: Run tests
-#         run: yarn test
+#         run: |
+#           cd mic-inventory-101/api-gateway
+#           yarn test
+
+
+# name: API Gateway Service Tests
+
 
 
 # on:
@@ -63,14 +81,14 @@ jobs:
 
 
 # jobs:
-#   inventory-main:
+#   inventory-auth:
 #     runs-on: ubuntu-latest
 #     steps:
 #       - run: echo "Action Started"
 #       - name: Checkout
 #         uses: actions/checkout@v4
 #       - name: Run a one-line script
-#         run : echo "Hello,Inventory!"
+#         run : echo "Hello,API!"
 #       - name: Run a multi-line script
 #         run:  |
 #           echo Add other actions to build,
